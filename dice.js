@@ -9052,19 +9052,24 @@ var _user$project$Main$dieTL = {ctor: '_Tuple2', _0: 0.2, _1: 0.2};
 var _user$project$Main$total = function (model) {
 	return _elm_lang$core$Basics$toString(model.one + model.two);
 };
+var _user$project$Main$center = F2(
+	function (size, value) {
+		return _elm_lang$core$Basics$toString(value - (size / 2));
+	});
 var _user$project$Main$dot = F2(
 	function (size, _p0) {
 		var _p1 = _p0;
+		var transform = _user$project$Main$center(size);
 		return A2(
 			_elm_lang$svg$Svg$use,
 			{
 				ctor: '::',
 				_0: _elm_lang$svg$Svg_Attributes$x(
-					_elm_lang$core$Basics$toString(_p1._0 - (size / 2))),
+					transform(_p1._0)),
 				_1: {
 					ctor: '::',
 					_0: _elm_lang$svg$Svg_Attributes$y(
-						_elm_lang$core$Basics$toString(_p1._1 - (size / 2))),
+						transform(_p1._1)),
 					_1: {
 						ctor: '::',
 						_0: _elm_lang$svg$Svg_Attributes$xlinkHref('logo.svg#elm'),
@@ -9182,68 +9187,82 @@ var _user$project$Main$positions = function (face) {
 			return {ctor: '[]'};
 	}
 };
-var _user$project$Main$dice = function (face) {
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		{
-			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 1800 1800'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$svg$Svg$rect,
-				{
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$cx('0'),
-					_1: {
+var _user$project$Main$dots = F2(
+	function (size, face) {
+		return A2(
+			_elm_lang$svg$Svg$g,
+			{ctor: '[]'},
+			A2(
+				_elm_lang$core$List$map,
+				_user$project$Main$dot(300),
+				A2(
+					_elm_lang$core$List$map,
+					_user$project$Main$scalar(size),
+					_user$project$Main$positions(face))));
+	});
+var _user$project$Main$dice = F2(
+	function (size, face) {
+		var radiusStr = _elm_lang$core$Basics$toString(size / 100);
+		var sizeStr = _elm_lang$core$Basics$toString(size);
+		return A2(
+			_elm_lang$svg$Svg$svg,
+			{
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$viewBox(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'0 0 ',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							sizeStr,
+							A2(_elm_lang$core$Basics_ops['++'], ' ', sizeStr)))),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$svg$Svg$rect,
+					{
 						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$cy('0'),
+						_0: _elm_lang$svg$Svg_Attributes$cx('0'),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$svg$Svg_Attributes$width('1800px'),
+							_0: _elm_lang$svg$Svg_Attributes$cy('0'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$svg$Svg_Attributes$height('1800px'),
+								_0: _elm_lang$svg$Svg_Attributes$width(sizeStr),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$svg$Svg_Attributes$fill('#fff'),
+									_0: _elm_lang$svg$Svg_Attributes$height(sizeStr),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$svg$Svg_Attributes$stroke('#333'),
+										_0: _elm_lang$svg$Svg_Attributes$fill('#fff'),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$svg$Svg_Attributes$rx('3'),
+											_0: _elm_lang$svg$Svg_Attributes$stroke('#333'),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$svg$Svg_Attributes$ry('3'),
-												_1: {ctor: '[]'}
+												_0: _elm_lang$svg$Svg_Attributes$rx(radiusStr),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$ry(radiusStr),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
 								}
 							}
 						}
-					}
-				},
-				{ctor: '[]'}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$svg$Svg$g,
-					{ctor: '[]'},
-					A2(
-						_elm_lang$core$List$map,
-						_user$project$Main$dot(300),
-						A2(
-							_elm_lang$core$List$map,
-							_user$project$Main$scalar(1800),
-							_user$project$Main$positions(face)))),
-				_1: {ctor: '[]'}
-			}
-		});
-};
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(_user$project$Main$dots, size, face),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
@@ -9265,6 +9284,11 @@ var _user$project$Main$rand = A2(
 			}),
 		A2(_elm_lang$core$Random$int, 1, 6),
 		A2(_elm_lang$core$Random$int, 1, 6)));
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: A2(_user$project$Main$Model, 0, 0),
+	_1: _user$project$Main$rand
+};
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p5 = msg;
@@ -9278,11 +9302,6 @@ var _user$project$Main$update = F2(
 			};
 		}
 	});
-var _user$project$Main$init = {
-	ctor: '_Tuple2',
-	_0: A2(_user$project$Main$Model, 1, 1),
-	_1: _user$project$Main$rand
-};
 var _user$project$Main$Roll = {ctor: 'Roll'};
 var _user$project$Main$results = function (model) {
 	return A2(
@@ -9361,10 +9380,10 @@ var _user$project$Main$view = function (model) {
 								},
 								{
 									ctor: '::',
-									_0: _user$project$Main$dice(model.one),
+									_0: A2(_user$project$Main$dice, 1800, model.one),
 									_1: {
 										ctor: '::',
-										_0: _user$project$Main$dice(model.two),
+										_0: A2(_user$project$Main$dice, 1800, model.two),
 										_1: {ctor: '[]'}
 									}
 								}),

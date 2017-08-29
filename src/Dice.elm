@@ -26,6 +26,11 @@ type Msg
     | NewFace ( Int, Int )
 
 
+init : ( Model, Cmd Msg )
+init =
+    ( Model 0 0, rand )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -43,8 +48,8 @@ view model =
         , div [ class "container" ]
             [ results model
             , div [ class "dice" ]
-                [ dice model.one
-                , dice model.two
+                [ dice 1800 model.one
+                , dice 1800 model.two
                 ]
             ]
         ]
@@ -55,22 +60,29 @@ subscriptions model =
     Sub.none
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( Model 1 1, rand )
-
-
 rand : Cmd Msg
 rand =
     Random.generate NewFace (Random.map2 (,) (Random.int 1 6) (Random.int 1 6))
 
 
-dice : Int -> Svg msg
-dice face =
-    svg [ viewBox "0 0 1800 1800" ]
-        [ rect [ cx "0", cy "0", Svg.Attributes.width "1800px", Svg.Attributes.height "1800px", fill "#fff", stroke "#333", rx "3", ry "3" ] []
-        , g [] (List.map (dot 300) (List.map (scalar 1800) (positions face)))
-        ]
+dice : Float -> Int -> Svg msg
+dice size face =
+    let
+        sizeStr =
+            toString size
+
+        radiusStr =
+            toString (size / 100)
+    in
+        svg [ viewBox ("0 0 " ++ sizeStr ++ " " ++ sizeStr) ]
+            [ rect [ cx "0", cy "0", Svg.Attributes.width sizeStr, Svg.Attributes.height sizeStr, fill "#fff", stroke "#333", rx radiusStr, ry radiusStr ] []
+            , dots size face
+            ]
+
+
+dots : Float -> Int -> Svg msg
+dots size face =
+    g [] (List.map (scalar size) (positions face) |> (List.map (dot 300)))
 
 
 results : Model -> Html Msg
@@ -113,7 +125,16 @@ scalar value ( x, y ) =
 
 dot : Float -> Die -> Svg msg
 dot size ( cx, cy ) =
-    Svg.use [ x (toString (cx - size / 2)), y (toString (cy - size / 2)), xlinkHref "logo.svg#elm" ] []
+    let
+        transform =
+            center size
+    in
+        Svg.use [ x (transform cx), y (transform cy), xlinkHref "logo.svg#elm" ] []
+
+
+center : Float -> Float -> String
+center size value =
+    toString (value - size / 2)
 
 
 total : Model -> String
