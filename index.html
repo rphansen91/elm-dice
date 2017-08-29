@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Roll The Dice</title>
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+  </head>
+  <body>
+    <div class="builtwith">Built With <a href="https://elm-lang.org" target="_blank">Elm</a></div>
+    <div id="main"></div>
+    <script src="dice.js"></script>
+    <script>
+        var node = document.getElementById('main');
+        var app = Elm.Main.embed(node);
+    </script>
+  </body>
+</html>
