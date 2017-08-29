@@ -26,8 +26,7 @@ body {
 .table {
   position: absolute;
   top: 0; bottom: 0; right: 0; left: 0;
-  background: url('./craps.jpg') no-repeat center;
-  background-size: cover;
+  background: #333;
   z-index: -1;
 }
 
